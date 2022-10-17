@@ -1,0 +1,66 @@
+services:
+  api:
+  depends_on:
+    - postgres
+    - pgadmin
+    - minio
+  build:
+    dockerfile: Dockerfile
+    context: .
+    # Only will build development stage from our dockerfile
+    target: development
+  volumes:
+    - .:/usr/src/app
+    - /usr/src/app/node_modules
+  env_file:
+    - .env
+  # Run a command against the development stage of the image
+  command: npm run start:dev
+  ports:
+    - 5000:5000
+
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    # logging:
+    #   driver: none # disable logging
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    ports:
+      - '5050:80'
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    volumes:
+      - ./data/pgadmin:/var/lib/pgadmin
+    # logging:
+    #   driver: none # disable logging
+
+  minio:
+    image: minio/minio
+    command: server --address ":8000" --console-address ":8001" /data
+    ports:
+      - '8000:8000'
+      - '8001:8001'
+    volumes:
+      - ./data/files:/data
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8000/minio/health/live']
+      interval: 30s
+      timeout: 20ss
+      retries: 3
+    # logging:
+    #   driver: none # disable logging

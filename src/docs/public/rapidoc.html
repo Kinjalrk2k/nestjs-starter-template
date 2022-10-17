@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <!-- Important: rapi-doc uses utf8 characters -->
+    <script
+      type="module"
+      src="https://unpkg.com/rapidoc/dist/rapidoc-min.js"
+    ></script>
+
+    <script src="https://unpkg.com/rapipdf/dist/rapipdf-min.js"></script>
+    <title>URCKON API Documentation</title>
+  </head>
+  <body>
+    <rapi-doc
+      spec-url="../docs/json"
+      render-style="view"
+      show-components="true"
+      layout="row"
+      allow-spec-url-load="false"
+      allow-spec-file-load="false"
+      default-schema-tab="schema"
+      bg-color="#2B303B"
+      text-color="#dee3ec"
+    >
+      <!-- <div>
+        <rapi-pdf
+          style="width: 700px; height: 40px; font-size: 18px"
+          spec-url="../docs/json"
+          hide-input="true"
+          button-bg="#b44646"
+        >
+        </rapi-pdf>
+      </div> -->
+    </rapi-doc>
+  </body>
+</html>
